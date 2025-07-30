@@ -1,6 +1,4 @@
-Here is a **detailed summary with questions and explanations** based on your sudo/root queries, including concepts of privilege, command behavior, and security implications:
-
----
+###SUDO and Root Questions 
 
 ### 🔹 **Q1: What is the difference between the `root` user and a `sudo` user?**
 
