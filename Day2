@@ -1,0 +1,150 @@
+Sure! Here's a **detailed summary** of all your GitHub-related questions and answers, but with **your repo name and paths replaced** by an example project called `my-project-backend` and runner user `ci_runner`.
+
+---
+
+# ✅ GitHub Actions & Self-Hosted Runner Summary (with Examples)
+
+## 🔁 1. **Where does GitHub clone my repo when CI/CD runs?**
+
+**Q: Where does GitHub store the code on a self-hosted runner?**
+When you run a workflow using `actions/checkout`, GitHub clones your repository into this path:
+
+```
+/home/ci_runner/actions-runner/_work/my-project-backend/my-project-backend
+```
+
+* The first `my-project-backend` is a workspace folder.
+* The second is the actual cloned repo directory.
+
+✅ This happens automatically on **each run** when you use the checkout step:
+
+```yaml
+- name: Checkout Code
+  uses: actions/checkout@v4
+```
+
+---
+
+## 📦 2. **What does `actions/checkout@v4` do?**
+
+**Q: What is the role of `actions/checkout@v4`?**
+
+* It's a GitHub-maintained action that **clones your repository into the runner**.
+* It ensures your CI/CD pipeline has access to the latest code for that workflow run.
+
+🟢 Example:
+
+```yaml
+- name: Checkout Code
+  uses: actions/checkout@v4
+```
+
+---
+
+## ⏳ 3. **How much time does it take to download the repo?**
+
+**Q: How long does it take to download the repo during CI/CD?**
+
+* On GitHub-hosted runners: ⚡ **Very fast** (usually under 5 seconds).
+* On self-hosted runners: 🕒 Depends on your **internet speed and repo size** (generally < 10 seconds).
+
+---
+
+## 🧠 4. **Does it always pull the latest code?**
+
+**Q: Will CI always get the latest version of the code?**
+
+✅ **Yes**, `actions/checkout` clones the latest commit of the triggering branch or commit SHA.
+
+---
+
+## 📂 5. **What is `${{ github.workspace }}`?**
+
+**Q: What is `github.workspace` in GitHub Actions?**
+
+* It's a built-in GitHub **context variable**.
+* It refers to the **working directory** inside the runner where the repo is cloned.
+
+🔍 For self-hosted runner:
+
+```
+${{ github.workspace }} = /home/ci_runner/actions-runner/_work/my-project-backend/my-project-backend
+```
+
+**Case-sensitive?** ✅ Yes — must be written as: `github.workspace`
+❌ Wrong: `GITHUB.WORKSPACE`, `GitHub.Workspace`, etc.
+
+---
+
+## 🧹 6. **Can I delete the cloned code after the CI is done?**
+
+**Q: Can I delete the repo after the CI job is complete?**
+
+✅ Yes, you can delete it **at the end of the workflow** if you need to free up space.
+
+🧼 Example step:
+
+```yaml
+- name: Cleanup workspace after build
+  run: |
+    echo "Deleting workspace: ${{ github.workspace }}"
+    rm -rf "${{ github.workspace }}"
+```
+
+> ⚠️ Only do this at the **very end**, or else later steps will fail.
+
+---
+
+## 🕵️ 7. **How can I verify the repo was cloned properly?**
+
+**Q: How do I confirm that GitHub cloned the repo?**
+
+You can manually inspect the path in your self-hosted runner:
+
+```bash
+ls -la /home/ci_runner/actions-runner/_work/my-project-backend/my-project-backend
+```
+
+You should see:
+
+```bash
+.git/
+README.md
+main.py
+.github/
+...
+```
+
+---
+
+## 📁 8. **What does "Clones repo to current working directory" mean?**
+
+**Q: What is meant by 'current working directory' in CI runner?**
+
+It means that GitHub Actions will **clone the repo inside a dedicated folder** like:
+
+```
+/home/ci_runner/actions-runner/_work/my-project-backend/my-project-backend
+```
+
+This becomes the default directory for all `run:` commands in your job unless you change it.
+
+---
+
+## 💡 Final Summary Table
+
+| Question                                             | Answer                                                                                   |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Where is code cloned in a self-hosted runner?        | `/home/ci_runner/actions-runner/_work/my-project-backend/my-project-backend`             |
+| What does `actions/checkout@v4` do?                  | Clones your GitHub repo into the runner environment                                      |
+| What is `${{ github.workspace }}`?                   | It refers to the full working directory path in the runner where the repo is checked out |
+| Case-sensitive context?                              | ✅ Yes. Use `github.workspace` exactly                                                    |
+| Does CI always use latest code?                      | ✅ Yes, it fetches the latest commit of the triggering branch                             |
+| Can you delete the cloned repo?                      | ✅ Yes, using `rm -rf ${{ github.workspace }}` in the last step                           |
+| How to verify clone location manually?               | Use `ls` on the path `/home/ci_runner/actions-runner/_work/...`                          |
+| What is the "current working directory" in a runner? | It's the folder where the repo is cloned and CI steps run from                           |
+| Does GitHub-hosted runner behave the same?           | ✅ Yes, but in a temporary directory (you don’t control path or user)                     |
+
+---
+
+Let me know if you want this exported as a `.md` file, added to your project README, or visualized in a diagram!
