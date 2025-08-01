@@ -46,5 +46,5 @@ DevSecOps
 Github--> SonarQube (Code Scan) + OWASP(Dependency Check) + Trivy / Docker_Scout /Sneak  (Docker Image Scanning) + Tests ----> Deploy on Docker 
 (Code )        (---------------------Sec---------)                                                                  (-Test-)     (Build) -(Deploy)
 
-Automated by ---- GitHub Actions Jenkinds /
+Automated by ---- GitHub Actions / Jenkins 
 
