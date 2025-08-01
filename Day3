@@ -1,0 +1,50 @@
+SonarQube
+
+
+Two types of  Testing
+1.SAST - Static Application Security Testing - before APplication Build and deployed then testing on code - Sonarqube
+2.DAST - Dynamic - Application running and build and then testing goes on -pentration testing (attack with different points to check vulnerabilities ) - OWASP
+
+SAST --> SonarQube --> Code
+
+1.Code Quality Check - Quality of code (check bugs , code smell , Duplication, Security Vulnerabilities, security Hotspots ) -->source code is less issue then quality code is good and vice versa
+2.Code Coverage 
+3. Quality Get check
+
+issue (developer): 
+1. Bugs - refers to section of code behave inappropriate way or wrong way and make applic. behave in wrong way 
+2. Code Smell - [CODE] Code is written not in proper way and code works and possibility it could cause problem in future
+3. Duplication- same code has written multiple time
+4. Security Vul-  section of code which can cause security issue there will be somekind of security risk 
+5. Security Hotspot -  manually review the code to check any security vulner (some kind of indication)
+
+whichever line have bugs sonarquebe tell us that line also provide solution /Suggestion in order to fix the issue 
+
+2. Code Coverage - autoamted testing (unit testing  ---> 10 test case to test throughly with 100 line of code then code coverage is 100% )  
+
+3. Quality Get check - if Code Coverage is 80 % then code will accepted (example) or 5 issue in whole code then code will acceptable , 5 % Duplicaiton , like these have some parameter which have threshold if above threshold then code is accepted 
+
+Sonarqube ----
+1. S.Server -  Report Published <------------|
+2. S.Scanner  - tool perform the scanning ---| (when run the analysis command and use/excute this tool and generate the report and its is  published on S.Server)
+
+when setup - 2 things 
+1. Sonarqube
+2. Postgress (backend database for Sonarqube which storing all the vulnerable data )
+
+
+Two Version: 
+1. Community Edition ----> only perform analysis on the main branch
+2. Developer Edition ----> perform analysis on multiple branches  | no.of lines
+
+
+
+
+DevSecOps
+.....................
+
+Github--> SonarQube (Code Scan) + OWASP(Dependency Check) + Trivy / Docker_Scout /Sneak  (Docker Image Scanning) + Tests ----> Deploy on Docker 
+(Code )        (---------------------Sec---------)                                                                  (-Test-)     (Build) -(Deploy)
+
+Automated by ---- GitHub Actions Jenkinds /
+
