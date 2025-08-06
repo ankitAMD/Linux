@@ -1,0 +1,120 @@
+Here are your questions rewritten in **simple English**, with **clear and accurate answers** for each:
+
+---
+
+### ✅ 1. **Where should the `Dockerfile` and `.dockerignore` be stored? On GitHub or the server?**
+
+**Question in simple English:**
+
+> Where do I need to keep the `Dockerfile` and `.dockerignore` files — on GitHub or only on the server?
+
+**Answer:**
+You should store both the `Dockerfile` and `.dockerignore` in your GitHub repository. This way, they are version-controlled, shared with your team, and used automatically during deployment.
+
+---
+
+### ✅ 2. **If `.gitignore` is there in my local but not `.dockerignore`, what happens when I push code to GitHub?**
+
+**Question in simple English:**
+
+> I have a `.gitignore` file in my local project, but no `.dockerignore`. If I push code to GitHub, what happens?
+
+**Answer:**
+If you haven’t created a `.dockerignore` file, nothing breaks — but Docker may include unnecessary files (like `.git`, `.env`, etc.) inside the image, which is bad for security and performance. It's good practice to add a `.dockerignore` file to avoid this.
+
+---
+
+### ✅ 3. **If I only have `.gitignore` and no `Dockerfile` or `.dockerignore`, will GitHub keep those files?**
+
+**Question in simple English:**
+
+> If I don’t have `Dockerfile` and `.dockerignore` in my local folder but push code to GitHub, will GitHub save them?
+
+**Answer:**
+No, GitHub will only store the files you push. If `Dockerfile` or `.dockerignore` don’t exist in your local folder, they won’t be stored in GitHub unless you add and commit them.
+
+---
+
+### ✅ 4. **Is `.dockerignore` needed during deployment on the server, or is `.gitignore` enough?**
+
+**Question in simple English:**
+
+> When deploying on the server using Docker, do I need `.dockerignore`, or is `.gitignore` enough?
+
+**Answer:**
+`.gitignore` is only for Git. It doesn’t affect Docker. You **must use `.dockerignore`** to tell Docker which files to ignore when building the image. This helps keep your image clean and secure.
+
+---
+
+### ✅ 5. **How can I run a GitHub Action workflow manually without pushing code changes?**
+
+**Question in simple English:**
+
+> How can I manually run my GitHub Action without changing any code?
+
+**Answer:**
+Use the `workflow_dispatch:` trigger in your workflow file like this:
+
+```yaml
+on:
+  workflow_dispatch:
+```
+
+This allows you to go to the **Actions tab in GitHub** and click "Run workflow" manually.
+
+---
+
+### ✅ 6. **How can I control who is allowed to run a GitHub Action workflow?**
+
+**Question in simple English:**
+
+> I want only specific people (like me or team leads) to run the GitHub Action. How can I do that?
+
+**Answer:**
+Add a condition like this in the workflow:
+
+```yaml
+jobs:
+  deploy:
+    if: github.actor == 'ankit-gupta' || github.actor == 'team-lead'
+```
+
+This way, only those GitHub usernames can run the workflow. Others will be skipped automatically.
+
+---
+
+### ✅ 7. **What if many workflows are triggered at the same time? Can I run them one-by-one (in queue)?**
+
+**Question in simple English:**
+
+> If many workflows run at the same time (by different developers), how can I make sure they run one-by-one instead of together?
+
+**Answer:**
+You can use `concurrency` in your workflow to run only one job at a time:
+
+```yaml
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+```
+
+This will **queue the workflows**, so one will finish before the next starts.
+
+---
+
+### ✅ 8. **What is the purpose of `.dockerignore` and how is it different from `.gitignore`?**
+
+**Question in simple English:**
+
+> What is `.dockerignore`, and how is it different from `.gitignore`?
+
+**Answer:**
+
+* `.gitignore` tells **Git** which files to skip (e.g., `node_modules`, `.env`, etc.).
+* `.dockerignore` tells **Docker** which files to skip **when building images**.
+
+They are used by different tools and should both be used in a Docker-based project.
+
+---
+
+Would you like me to generate all these as a downloadable **PDF guide** for future use?
