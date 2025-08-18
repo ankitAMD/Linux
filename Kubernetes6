@@ -1,0 +1,55 @@
+If worker nodes are managed only by the master node and not directly by the outside world, then how can outside users still access static content (like frontend) on ports 80 and 443 through kube-proxy?
+
+Since worker nodes don’t need to be managed directly from outside and are controlled by the master node, how does kube-proxy allow external users to access services (e.g., frontend) on ports 80 and 443?
+
+### 1. Worker node does **NOT** manage users directly
+
+* A worker node **doesn’t act as a gateway** for outside users.
+* It only runs Pods (apps/containers) and uses kubelet, kube-proxy, and CNI to manage them.
+* It takes orders only from the Master Node (API Server).
+
+---
+
+### 2. How outside world reaches your app (like frontend on port 80/443)?
+
+* When you expose a frontend (say React/Angular app) on **port 80/443**, you don’t directly open worker node ports.
+* Instead, you expose it using **Kubernetes Service** (like NodePort, LoadBalancer, or Ingress).
+
+---
+
+### 3. Role of **kube-proxy**
+
+* **kube-proxy** runs on every worker node.
+* It listens for service definitions from the API Server.
+* It makes sure that when traffic comes to that service (say port 80/443), it forwards it to the correct Pod.
+
+So:
+
+* **User → Service (via LoadBalancer/Ingress/NodePort)**
+* **Service → kube-proxy → Pod inside worker node**
+
+---
+
+### 4. Important clarification
+
+* Outside world **never talks to kube-proxy directly**.
+* kube-proxy is an internal helper that ensures routing **inside the cluster**.
+* For the outside world, you must use:
+
+  * **NodePort Service** → exposes a port on each worker node.
+  * **LoadBalancer Service** → gives a public IP (cloud providers).
+  * **Ingress Controller** → smarter routing with domains, SSL (TLS), etc.
+
+---
+
+✅ **So your statement correction:**
+
+> “Outside world user can access the node from kube-proxy on port 80/443”
+
+👉 Actually:
+Outside users **don’t access kube-proxy directly**.
+They access your app via a **Service (NodePort/LoadBalancer/Ingress)**, and kube-proxy then forwards that traffic internally to the right Pod.
+
+---
+
+Would you like me to give you a **real example with YAML** (like exposing a frontend app on port 80/443) so you can see how kube-proxy and Service work together?
