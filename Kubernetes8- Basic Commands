@@ -1,0 +1,136 @@
+#!/bin/bash
+
+echo "🔧 STEP 1: Create a Kind Cluster with Custom Config"
+echo "Command: kind create cluster --name tws-kind-cluster --config=config.yml"
+kind create cluster --name tws-kind-cluster --config=config.yml
+
+echo -e "\n🔎 STEP 2: View Available Contexts in kubeconfig"
+kubectl config get-contexts
+
+echo -e "\n📍 STEP 3: Get Cluster Info Using Specific Context"
+kubectl cluster-info --context kind-tws-kind-cluster
+
+echo -e "\n🧱 STEP 4: Get All Nodes in the Current Cluster"
+kubectl get nodes
+
+echo -e "\n🧱 STEP 5: Get Nodes with a Specific Context"
+kubectl get nodes --context kind-tws-kind-cluster
+
+echo -e "\n💡 STEP 6: Check kubectl and Kind Versions"
+kubectl version --client
+kind version
+
+echo -e "\n🐳 STEP 7: View All Running/Stopped Docker Containers"
+docker ps -a
+
+echo -e "\n📋 STEP 8: List All Kind Clusters Created"
+kind get clusters
+
+echo -e "\n⚙️ STEP 9: Show Current kubeconfig Context"
+kubectl config current-context
+
+echo -e "\n📤 STEP 10: Export kubeconfig for a Specific Cluster"
+kind export kubeconfig --name tws-kind-cluster
+
+echo -e "\n🔁 STEP 11: Re-Verify Contexts After Export"
+kubectl config get-contexts
+
+echo -e "\n📡 STEP 12: Show Cluster Info Again to Confirm"
+kubectl cluster-info --context kind-tws-kind-cluster
+
+echo -e "\n🔍 STEP 13: Final Check - List Nodes Again"
+kubectl get nodes
+
+echo -e "\n✅ Script Complete. Your Kind cluster is up and connected!"
+
+
+
+kind get clusters
+  │
+  ▼
+Cluster Name: tws-kind-cluster
+  │
+  ▼
+Context in kubeconfig: kind-tws-kind-cluster
+  │
+  ▼
+kubectl uses this context
+  │
+  ▼
+Kubernetes Cluster Nodes
+  ├── tws-kind-cluster-control-plane (control plane)
+  ├── tws-kind-cluster-worker (worker)
+  ├── tws-kind-cluster-worker2 (worker)
+  └── tws-kind-cluster-worker3 (worker)
+
+
+  | Command                       | Meaning                                                                    |
+| ----------------------------- | -------------------------------------------------------------------------- |
+| `kind get clusters`           | Lists all clusters you’ve created using Kind. Returns just the name(s).    |
+| `kubectl config get-contexts` | Shows the **contexts** used by `kubectl` to connect to clusters.           |
+| `kind export kubeconfig`      | Creates a kubeconfig context for the Kind cluster so `kubectl` can use it. |
+| `kubectl get nodes`           | Lists the actual nodes (machines) running inside the cluster.              |
+
+
+
+👌 — **Kind** and **kubectl**
+---
+
+## 🐳 **Kind (Kubernetes IN Docker)**
+
+* **What it is**: A tool to **create Kubernetes clusters inside Docker containers**.
+* **Purpose**: Helps you quickly spin up **local test clusters** for learning or CI/CD pipelines.
+* **Scope**: Creates and manages *clusters*.
+* **Examples**:
+
+  ```bash
+  kind create cluster --name demo       # make a new Kubernetes cluster
+  kind get clusters                     # list existing Kind clusters
+  kind delete cluster --name demo       # remove the cluster
+  ```
+
+👉 Think of **Kind as the "cluster creator"**.
+
+---
+
+## ☸️ **kubectl (Kubernetes Control)**
+
+* **What it is**: The **official CLI tool** to **interact with any Kubernetes cluster**.
+* **Purpose**: Lets you deploy apps, check resources, debug pods, etc.
+* **Scope**: Talks to an *existing cluster* (Kind, Minikube, kubeadm, or even cloud clusters like EKS/AKS/GKE).
+* **Examples**:
+
+  ```bash
+  kubectl get pods                     # list pods
+  kubectl apply -f deployment.yaml     # deploy an app
+  kubectl logs my-pod                  # see logs of a pod
+  kubectl describe node                # details of a node
+  ```
+
+👉 Think of **kubectl as the "remote control"** for Kubernetes clusters.
+
+---
+
+## ⚖️ **Kind vs kubectl**
+
+| Feature     | **Kind** 🐳 (Kubernetes in Docker) | **kubectl** ☸️ (Kubernetes CLI)                         |
+| ----------- | ---------------------------------- | ------------------------------------------------------- |
+| Role        | Creates/Manages clusters (local)   | Interacts with clusters                                 |
+| Scope       | Cluster lifecycle                  | Cluster operations (pods, nodes, etc.)                  |
+| Used by     | Devs, CI/CD pipelines for testing  | Everyone (admins, devs, SREs)                           |
+| Example use | `kind create cluster`              | `kubectl get pods`                                      |
+| Works with  | Docker                             | Any Kubernetes cluster (Kind, Minikube, EKS, GKE, etc.) |
+
+---
+
+## ✅ Quick Analogy
+
+* **Kind** = like installing **VirtualBox** or **VMWare** to create a virtual machine.
+* **kubectl** = like using **SSH** to log in and manage what’s inside the VM.
+
+---
+
+👉 So, you usually **use them together**:
+
+1. Use **Kind** to create a cluster.
+2. Use **kubectl** to deploy apps and manage that cluster
