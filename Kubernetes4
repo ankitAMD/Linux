@@ -1,0 +1,65 @@
+
+* **API Server = communication gateway**, but it only runs on the **control plane (master node)**, **not on worker nodes**.
+  So how do worker nodes handle communication without their own gateway? Let’s break it down step by step.
+
+---
+
+## 🔹 1. Worker node doesn’t need its own gateway
+
+* Worker nodes **don’t make cluster-wide decisions**.
+* They are **just executors** → they run Pods, containers, and report their status.
+* The **master node (API Server + Controller Manager + etcd + Scheduler)** is the brain.
+* The **worker node only talks to the API Server** when needed.
+
+👉 So the **gateway role (control/authentication)** is **centralized** at the API Server, not duplicated.
+
+---
+
+## 🔹 2. How worker node communicates
+
+On each worker node, two key agents run:
+
+### **a) kubelet**
+
+* The kubelet connects to the API Server (master node).
+* It gets instructions like:
+
+  * “Run this Pod with 2 containers.”
+  * “Delete that Pod.”
+* It reports back:
+
+  * “Pod is running.”
+  * “Pod failed.”
+
+👉 **All control communication goes through API Server**, kubelet never bypasses it.
+
+---
+
+### **b) kube-proxy + CNI**
+
+* Pods on workers need to **send/receive raw packets** (like HTTP requests).
+* For this, worker nodes rely on:
+
+  * **CNI (Calico, Weave, Flannel, etc.)** → sets up **network interfaces and routes** so Pods can talk across nodes.
+  * **kube-proxy** → configures iptables or IPVS to route traffic from **Services → Pods**.
+
+👉 These do **packet-level forwarding**, not cluster-wide authorization.
+
+---
+
+## 🔹 3. So who does what?
+
+* **Master node (API Server)** = gateway for all cluster control traffic (who can create/delete/list Pods, etc.).
+* **Worker node (kubelet)** = follows API Server’s instructions, reports back status.
+* **Worker node (CNI + kube-proxy)** = handles packet delivery between Pods/Services (data plane).
+
+---
+
+✅ In short:
+
+* Worker nodes **don’t have a gateway** because they don’t need to enforce cluster-wide rules.
+* They just run local agents (kubelet, kube-proxy, CNI) which rely on the master node’s **API Server gateway** for control, and use **CNI networking** for data traffic.
+
+---
+
+Do you want me to make a **clear table (Master vs Worker responsibilities)** so you can revise later without confusion?
