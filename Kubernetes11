@@ -1,0 +1,64 @@
+as first command we get kind cluster name "ravi@theta:/usr/local/bin$ kind get clusters 
+tws-cluster
+ravi@theta:/usr/local/bin$ kubectl config get-contexts
+CURRENT   NAME               CLUSTER            AUTHINFO           NAMESPACE
+*         kind-tws-cluster   kind-tws-cluster   kind-tws-cluster
+ravi@theta:/usr/local/bin$" but what are the purpoise of the 2nd command and what it shown ?
+
+-----------------------------------------------------------------
+
+Good question 👍 Let’s break it down clearly:
+
+---
+
+### 🟢 1st Command: `kind get clusters`
+
+```bash
+kind get clusters
+```
+
+* This shows **all clusters created with `kind`** on your system.
+* Example output:
+
+  ```
+  tws-cluster
+  ```
+* ⚡️ It only lists cluster names (from Kind’s perspective), **not how `kubectl` is currently configured**.
+
+---
+
+### 🔵 2nd Command: `kubectl config get-contexts`
+
+```bash
+kubectl config get-contexts
+```
+
+* This shows **all contexts stored in your kubeconfig file (`~/.kube/config`)**.
+* A **context** = (Cluster + User + Namespace).
+* Example:
+
+  ```
+  CURRENT   NAME               CLUSTER            AUTHINFO           NAMESPACE
+  *         kind-tws-cluster   kind-tws-cluster   kind-tws-cluster
+  ```
+* Meaning of columns:
+
+  * **CURRENT** → `*` marks which context is active now (where your `kubectl` commands go).
+  * **NAME** → The name of the context.
+  * **CLUSTER** → The Kubernetes cluster this context connects to.
+  * **AUTHINFO** → Which user credentials are used.
+  * **NAMESPACE** → Default namespace (blank = `default`).
+
+---
+
+### ✨ Why do we need both?
+
+* `kind get clusters` → Shows only **Kind-managed clusters** (but doesn’t tell which one `kubectl` is using).
+* `kubectl config get-contexts` → Shows **all clusters `kubectl` knows about**, not just Kind. This tells you **which cluster you are currently connected to**.
+
+So in your case:
+
+* `kind` says: you have **one cluster** = `tws-cluster`.
+* `kubectl` says: your **current context** is `kind-tws-cluster`, which connects to that cluster. ✅
+
+
