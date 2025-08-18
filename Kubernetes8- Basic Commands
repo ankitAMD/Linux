@@ -43,6 +43,12 @@ kubectl get nodes
 
 echo -e "\n✅ Script Complete. Your Kind cluster is up and connected!"
 
+echo -e "\n✅ switch your kubectl client to a specific context."
+kubectl config use-context kind-tws-cluster 
+kubectl get nodes
+kubectl get pods
+
+
 
 
 kind get clusters
