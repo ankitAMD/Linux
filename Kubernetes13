@@ -1,0 +1,72 @@
+Here, context is used for and why? Who created context
+
+--------------------------------------
+
+Great follow-up 👍 Let’s go deeper into **context** in Kubernetes.
+
+---
+
+## 🔹 What is a **context** in Kubernetes?
+
+A **context** is a shortcut entry in your `kubeconfig` file that tells `kubectl` which **cluster**, **user**, and **namespace** to talk to.
+It’s basically a *saved configuration profile*.
+
+Example from `~/.kube/config` 👇
+
+```yaml
+contexts:
+- context:
+    cluster: kind-tws-cluster   # which cluster API server to use
+    user: kind-tws-cluster      # which credentials to use
+    namespace: default          # default namespace
+  name: kind-tws-cluster        # the context name
+```
+
+---
+
+## 🔹 Why is context used?
+
+Because you can connect to **multiple clusters** from one machine (Dev, UAT, Prod, Kind, Minikube, EKS, etc.).
+
+Instead of always typing:
+
+```bash
+kubectl --kubeconfig ~/.kube/config-dev --context dev-cluster get pods
+```
+
+You just switch:
+
+```bash
+kubectl config use-context dev-cluster
+kubectl get pods
+```
+
+➡️ So **context makes switching easy** between clusters and users.
+
+---
+
+## 🔹 Who creates the context?
+
+* When you install/connect a cluster, the **tool or command** writes a context into your kubeconfig.
+
+  * **Kind** → creates a context like `kind-tws-cluster`.
+  * **Minikube** → creates `minikube`.
+  * **EKS (AWS)** → `aws eks update-kubeconfig --name prod` creates a context like `arn:aws:eks:region:account:cluster/prod`.
+* You can also **manually create or edit** contexts in `~/.kube/config`.
+
+---
+
+## 🔹 Summary
+
+* **Context = profile** (cluster + user + namespace).
+* **Used for:** Telling `kubectl` which cluster/user to talk to.
+* **Created by:** The tool (Kind/Minikube/EKS) or manually by you.
+* **Why:** Makes it easy to switch between clusters without retyping long kubeconfig paths.
+
+---
+
+👉 So in your case:
+
+* Context `kind-tws-cluster` was created automatically by **Kind** when you ran `kind create cluster --name tws-cluster`.
+* Purpose: So `kubectl` knows *which cluster* (Kind one), *which user*, and *which namespace* to use.
+
