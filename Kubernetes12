@@ -1,0 +1,78 @@
+As kubectl understands by adding kind on cluster name, that this cluster was created by kind, so this is a kind cluster, but what is the actual name of the cluster? What should we speak ?
+context is used for the cluster that is created by which type of tool, like kind? Is this context name  created by itself?
+
+-----------------------------------------
+
+You’ve spotted a very interesting detail 🔍 — let me explain step by step so it’s super clear:
+
+---
+
+## 🟢 What is the **actual name of the cluster**?
+
+* When you create a Kind cluster (e.g. `kind create cluster --name tws-cluster`),
+  *the real cluster name* inside Kubernetes is just `tws-cluster`.
+* But in kubeconfig, Kind **adds a prefix `kind-`** to distinguish it.
+
+  * So the context becomes `kind-tws-cluster`.
+  * The cluster entry inside kubeconfig is also named `kind-tws-cluster`.
+
+Example kubeconfig snippet 👇
+
+```yaml
+clusters:
+- cluster:
+    server: https://127.0.0.1:43773
+  name: kind-tws-cluster    # ← cluster name stored in kubeconfig
+contexts:
+- context:
+    cluster: kind-tws-cluster
+    user: kind-tws-cluster
+  name: kind-tws-cluster    # ← context name (same as cluster in Kind case)
+```
+
+---
+
+## 🔵 What should we **call it when speaking**?
+
+* The **real Kubernetes cluster** = `tws-cluster` (because that’s what you named it).
+* But when using `kubectl`, you usually refer to it by the **context name** = `kind-tws-cluster`.
+* So in conversation:
+
+  * **Infra level (Kind tool):** “I created a Kind cluster named `tws-cluster`.”
+  * **Kubectl level:** “I switched to the context `kind-tws-cluster`.”
+
+---
+
+## 🟣 Does **context tell us the tool (Kind, Minikube, EKS, GKE, etc.)?**
+
+* ❌ No. Context itself does **not** indicate the tool.
+* It just maps **Cluster + User + Namespace**.
+* Example:
+
+  * Minikube → creates a context called `minikube`.
+  * Kind → creates contexts like `kind-<cluster-name>`.
+  * EKS (AWS) → creates contexts like `arn:aws:eks:us-east-1:123456789:cluster/dev-cluster`.
+* So the **tool chooses the naming convention**, but context is just a kubeconfig entry.
+
+---
+
+## 🟡 Who creates the context name?
+
+* When you run `kind create cluster --name tws-cluster`,
+
+  * Kind automatically **writes a kubeconfig entry**.
+  * That entry’s cluster + context + user are all named `kind-tws-cluster`.
+* You can rename the context if you want:
+
+  ```bash
+  kubectl config rename-context kind-tws-cluster dev-cluster
+  kubectl config use-context dev-cluster
+  ```
+
+---
+
+✅ **In summary:**
+
+* **Actual cluster name (inside Kind):** `tws-cluster`.
+* **Kubectl’s view (in kubeconfig):** `kind-tws-cluster` (context + cluster + user entry).
+* **Context name = auto-created by the tool**, but you can rename it for clarity.
