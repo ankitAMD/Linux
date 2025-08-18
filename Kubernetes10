@@ -1,0 +1,63 @@
+# 🌐 How can `kubectl` connect to multiple clusters and switch between them?
+
+Yes 👍 `kubectl` can connect to **multiple Kubernetes clusters**, and you can switch between them anytime.  
+
+## 🔑 How it works
+- `kubectl` stores cluster connection info in a file called **kubeconfig** (default: `~/.kube/config`).
+- This file can hold **multiple clusters, users, and contexts**.
+- A **context** = (Cluster + User + Namespace).
+- You switch clusters by changing the **current context**.
+
+
+## 🔧 Steps
+
+### 1️⃣ View all available contexts (clusters)
+```bash
+kubectl config get-contexts
+````
+
+**Example output:**
+
+```
+CURRENT   NAME                 CLUSTER          AUTHINFO      NAMESPACE
+*         kind-dev-cluster     kind-dev-cluster kind-dev-user default
+          kind-prod-cluster    kind-prod-cluster kind-prod-user default
+
+### 2️⃣ Switch to another cluster (context)
+
+```bash
+kubectl config use-context kind-prod-cluster
+```
+
+✅ Now all `kubectl` commands go to the **prod cluster**.
+
+---
+
+### 3️⃣ Check current cluster you are connected to
+
+```bash
+kubectl config current-context
+```
+
+---
+
+### 4️⃣ (Optional) Merge multiple kubeconfig files
+
+If you have separate files (`config-dev`, `config-prod`), merge them like this:
+
+```bash
+export KUBECONFIG=~/.kube/config:~/kube/config-dev:~/kube/config-prod
+kubectl config view --merge --flatten > ~/.kube/config
+```
+
+---
+
+## 🚀 Summary
+
+* `kubectl` can manage **multiple clusters**.
+* Switch between them using **contexts** in kubeconfig.
+* Core command:
+
+```bash
+kubectl config use-context <context-name>
+
