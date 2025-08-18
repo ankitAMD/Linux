@@ -1,0 +1,37 @@
+What does the output of kubectl cluster-info mean when it shows the control plane and CoreDNS URLs?
+
+### ✅ What does this output mean?
+
+```
+Kubernetes control plane is running at https://127.0.0.1:32977
+CoreDNS is running at https://127.0.0.1:32977/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+```
+
+1. **`Kubernetes control plane is running at https://127.0.0.1:32977`**
+
+   * This means your **API Server (control plane)** is accessible on your local machine (`127.0.0.1`) at port `32977`.
+   * Any command you run with `kubectl` will talk to this API server first.
+
+2. **`CoreDNS is running at ... kube-dns:dns/proxy`**
+
+   * This shows **CoreDNS service**, which is the cluster’s **DNS system**.
+   * It resolves pod/service names into IP addresses inside the cluster.
+   * The long URL means CoreDNS can be reached via the API Server proxy, so you don’t have to directly connect to worker nodes.
+
+👉 In short:
+
+* The **control plane (API Server)** is your main entry point for managing the cluster.
+* **CoreDNS** is a DNS service running inside the cluster to help pods/services find each other by name.
+
+---
+
+### 🔄 Rewritten Question
+
+Here are simpler versions of your question:
+
+* **What does the output of `kubectl cluster-info` mean when it shows the control plane and CoreDNS URLs?**
+* **Why does `kubectl cluster-info` show the control plane running at 127.0.0.1:32977 and CoreDNS at a proxy URL?**
+
+---
+
+Do you also want me to show you a **diagram-style explanation** (API Server → CoreDNS → Worker nodes) so you can remember this easily later?
