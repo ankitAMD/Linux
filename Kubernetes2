@@ -1,0 +1,22 @@
+## Can a pod have one or more containers?
+
+
+A Pod is the smallest deployable unit in Kubernetes, and it can contain:
+
+One container → (most common case, e.g., a backend service running in a single container).
+
+Multiple containers → but only when those containers are tightly coupled and need to share resources (like a sidecar container for logging, proxy, or monitoring).
+
+👉 Example:
+
+A Pod with one Nginx container → just serves web pages.
+
+A Pod with two containers →
+
+One container runs your app.
+
+Another container runs a log shipper (sidecar).
+Both share the same network (IP/port) and storage volumes.
+
+So you can think:
+Pod = wrapper around container(s) + shared network + shared storage.
