@@ -1,0 +1,122 @@
+
+# 🌐 Kubernetes Basics – Pods, Deployments, Services & Namespaces
+
+---
+
+## 🐳 From Docker to Kubernetes
+
+* **Docker Container(s)** → wrapped inside a **Pod**
+* **Pod** → managed by a **Deployment**
+* **Deployment** → exposed to outside world via a **Service**
+
+👉 For **autoscaling & autohealing** → we use **Deployments**
+👉 For **external access** → we use **Services**
+
+Example:
+
+```
+[NGINX Container] → [Pod] → [Deployment] → [Service] → 🌍 User Access
+```
+
+Similarly for **MySQL Container**, only configuration changes differ.
+
+---
+
+## ⚡ Why Namespaces?
+
+When multiple apps (like **Nginx**, **MySQL**) run on the **same cluster**, confusion arises.
+To manage them properly → **Namespaces** are used.
+
+Think of **Namespaces** like **WhatsApp Groups**:
+
+* Family group
+* Friends group
+* Work group
+
+📌 Same way, Kubernetes uses **Namespaces** to isolate resources.
+
+---
+
+## 📦 Namespace Concept
+
+**Namespace = Group of resources (Pods, Deployments, Services, etc.) isolated from other groups.**
+
+✅ Better management
+✅ No resource conflicts
+✅ Logical separation
+
+---
+
+## 📝 Default Namespaces in Kubernetes
+
+```bash
+kubectl get namespace
+```
+
+Output:
+
+* **default** → If you don’t specify a namespace, workloads go here.
+* **kube-node-lease** → Stores cluster node lease info.
+* **kube-public** → Public resources (accessible to all).
+* **kube-system** → System-level pods (DNS, kube-proxy, etc.).
+* **local-path-storage** → Default storage for local clusters.
+
+---
+
+## 🛠️ Namespace Commands
+
+```bash
+# Check all namespaces
+kubectl get ns
+
+# Create new namespace
+kubectl create ns nginx
+
+# Run pod inside a namespace
+kubectl run nginx --image nginx -n nginx
+
+# List pods inside namespace
+kubectl get pods -n nginx
+
+# Delete pod inside namespace
+kubectl delete pod nginx -n nginx
+
+# Delete namespace
+kubectl delete ns nginx
+```
+
+---
+
+## 📂 Using Manifest Files
+
+For better practice, create YAML manifests:
+
+* `namespace.yml` → Creates namespace
+* `pod.yml` → Defines Nginx pod
+* `deployment.yml` → Defines scalable deployment
+
+Commands:
+
+```bash
+kubectl apply -f namespace.yml
+kubectl apply -f pod.yml
+kubectl apply -f deployment.yml
+
+kubectl get pods -n nginx
+kubectl exec -it pod/nginx-pod -n nginx -- bash
+kubectl describe pod/nginx-pod -n nginx
+```
+
+---
+
+## 🔑 Key Takeaway
+
+👉 **Creating a Pod is not a speciality.**
+👉 **Making a Pod scalable & self-healing requires a Deployment.**
+
+📌 **Rule of Thumb:**
+
+* **One Pod = One main container (best practice)**
+* **Pods scale horizontally (replicas)**, not by adding containers inside one pod.
+
+---
