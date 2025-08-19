@@ -1,6 +1,6 @@
  Why are we creating multiple pods for the same application when traffic increases? 
 We will not create more containers in a pod, because as we know, a pod can create more than one container
----
+--
 
 ### 🔹 What is a Pod?
 
