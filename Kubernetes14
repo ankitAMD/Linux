@@ -1,0 +1,83 @@
+ Why are we creating multiple pods for the same application when traffic increases? 
+We will not create more containers in a pod, because as we know, a pod can create more than one container
+---
+
+### 🔹 What is a Pod?
+
+* In Kubernetes, a **Pod** is the smallest deployable unit.
+* A Pod can run **one or more containers**, but those containers are tightly coupled:
+
+  * They **share the same network namespace** (same IP & port space).
+  * They **share storage volumes** (if mounted).
+  * They are designed to **work together as one logical unit** (e.g., a main app + a helper/sidecar).
+
+---
+
+### 🔹 Why not scale containers inside a single Pod?
+
+1. **Pods are meant to be ephemeral and independent**
+
+   * Kubernetes scales **Pods**, not containers inside a Pod.
+   * If one container inside a Pod crashes, Kubernetes may restart the whole Pod.
+   * If you put multiple app replicas inside one Pod, they become **tightly coupled** (all fail together).
+
+2. **Scaling granularity**
+
+   * Kubernetes Horizontal Pod Autoscaler (HPA) scales Pods based on CPU/Memory/Custom metrics.
+   * If you had 5 containers in 1 Pod, you can’t independently scale one of them — you always scale all of them together.
+
+3. **Load balancing**
+
+   * Kubernetes Services load-balance **between Pods**, not containers.
+   * If you only had 1 Pod with multiple containers, K8s can’t spread traffic across nodes.
+   * With multiple Pods, the Service can distribute load across Pods (and across nodes).
+
+4. **Fault tolerance & high availability**
+
+   * If one Pod goes down, others on different nodes keep serving traffic.
+   * If all replicas were in 1 Pod, a single node failure would kill your whole app.
+
+---
+
+### 🔹 Then why allow multiple containers in a Pod at all?
+
+Good question 👍.
+Multiple containers in a Pod are useful when they **must work together** very closely:
+
+* **Sidecar pattern** → e.g., an Nginx proxy container alongside an app container.
+* **Init container** → runs setup before the main app container starts.
+* **Log collector/monitoring agent** → sidecar for logging/metrics.
+
+But **scaling** is done at the Pod level, not container level.
+
+---
+
+### 🔹 Example
+
+Let’s say you have a web app:
+
+* **Wrong way**:
+
+  * One Pod → 10 containers of the same web app.
+  * All on one node → if the node dies, your app is gone.
+  * No Service load balancing is possible across nodes.
+
+* **Right way**:
+
+  * 10 Pods → each with 1 container (web app).
+  * Spread across multiple nodes.
+  * Service load balances traffic across Pods.
+  * HPA can scale from 10 Pods → 20 Pods if traffic increases.
+
+---
+
+✅ **Summary:**
+We don’t create multiple containers of the same app inside one Pod because:
+
+* Pods are designed to host tightly coupled containers, not scale replicas.
+* Scaling & load balancing in Kubernetes works at the **Pod level**, not the container level.
+* Using multiple Pods ensures better **fault tolerance, load distribution, and autoscaling**.
+
+---
+Pods are designed to scale and distribute themselves, not their containers.
+That’s why Kubernetes says: “One container per Pod is the most common pattern.”
